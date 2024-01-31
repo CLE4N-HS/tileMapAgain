@@ -1,12 +1,12 @@
 #pragma once
 #include "tools.h"
 
-#define ANIM_TIME_DURATION 0.5f
+#define ANIM_TIME_DURATION 0.25f
 
 typedef enum Direction Direction;
 typedef enum Direction {
-	UP,
-	DOWN,
+	JUMP,
+	FALL,
 	RUN,
 	IDLE,
 	NOCHEATCODE
