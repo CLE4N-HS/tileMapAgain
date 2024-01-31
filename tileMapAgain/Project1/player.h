@@ -29,6 +29,8 @@ typedef struct Player {
 	sfBool flip;
 	sfVector2f pos;
 	sfVector2f tmpPos;
+	sfVector2i currentBloc;
+	sfVector2i wantedBloc;
 	sfVector2f speed;
 	Direction animState;
 	Direction lastAnimState;
@@ -44,6 +46,8 @@ int nb_players;
 void initPlayer();
 void updatePlayer();
 void displayPlayer(sfRenderTexture* _texture);
+sfVector2i getCurrentBlockPos(PlayerType _type);
+sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction);
 void setPlayerInBlock(PlayerType _type, int _x, int _y);
 void movePlayer(PlayerType _type, Direction _direction);
 void applyGravity();

@@ -43,11 +43,11 @@ void initPlayer()
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
 			player[i].origin = vector2f(16.f, 32.f);
-			player[i].pos = vector2f(3.f * BLOCK_SIZE - player[i].origin.x * 2.f, 5.f * BLOCK_SIZE);
+			player[i].pos = vector2f(3.f * BLOCK_SIZE + player[i].origin.x * 2.f, 3.f * BLOCK_SIZE + player[i].origin.y * 2.f);
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 32.f);
-			player[i].pos = vector2f(2.f * BLOCK_SIZE - player[i].origin.x * 2.f, 4.f * BLOCK_SIZE);
+			setPlayerInBlock(BIRD, 3, 3);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 
@@ -95,7 +95,8 @@ void updatePlayer()
 	//applyGravity();
 	allIdles = 0;
 	moveTimer += getDeltaTime();
-
+	//printf("%f, %f\n", player[FROG].pos.x, player[FROG].pos.y);
+	//printf("%d, %d\n", player[FROG].currentBloc, player[FROG].wantedBloc);
 
 
 	if ((sfKeyboard_isKeyPressed(sfKeyZ) || sfKeyboard_isKeyPressed(sfKeyUp)) && allowedToMove) {
@@ -173,7 +174,12 @@ void updatePlayer()
 				moveTimer = 0.f;
 				waitMoveTimer = 0.f;
 				isAnimFinished = sfFalse;
+				//getCurrentBlockPos(FROG);
+				setWantedBlockPos(i, player[i].animState);
+				printf("%d.x, %d.y ; %d.x, %d.y\n", player[i].currentBloc.x, player[i].currentBloc.y, player[i].wantedBloc.x, player[i].wantedBloc.y);
+
 			}
+
 		}
 
 		// canMove
@@ -251,6 +257,40 @@ void displayPlayer(sfRenderTexture* _texture)
 	sfRenderTexture_drawSprite(_texture, playerSprite, NULL);
 }
 
+sfVector2i getCurrentBlockPos(PlayerType _type)
+{
+	sfVector2i v;
+	v = vector2i((int)player[_type].pos.x / (int)BLOCK_SIZE, (int)player[_type].pos.y / (int)BLOCK_SIZE - 1);
+	player[_type].currentBloc = v;
+	return v;
+}
+
+sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction)
+{
+	sfVector2i v;
+	sfVector2i add;
+	switch (_direction) {
+	case JUMP:
+		add = vector2i(0, -1);
+		break;
+	case FALL:
+		add = vector2i(0, 1);
+		break;
+	case RUN:
+		if (!player[_type].flip) add = vector2i(1, 0);
+		else if (player[_type].flip) add = vector2i(-1, 0);
+		break;
+	default:
+		add = vector2i(0, 0);
+		break;
+	}
+	v = getCurrentBlockPos(_type);
+	v.x += add.x;
+	v.y += add.y;
+	player[_type].wantedBloc = v;
+	return v;
+}
+
 void applyGravity()
 {
 	//if (!collisionMapPlayer(player.fRect, FALL, AddVectors(player.acceleration, vector2f(1000.f, 1000.f)))) {
@@ -263,7 +303,8 @@ void applyGravity()
 
 void setPlayerInBlock(PlayerType _type, int _x, int _y)
 {
-
+	player[_type].pos.x = (int)BLOCK_SIZE * _x + (int)player[_type].origin.x * 2;
+	player[_type].pos.y = (int)BLOCK_SIZE * _y + (int)player[_type].origin.y * 2;
 }
 
 void movePlayer(PlayerType _type, Direction _direction)
@@ -280,6 +321,7 @@ void movePlayer(PlayerType _type, Direction _direction)
 				isAnimFinished = sfTrue;
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
+				setPlayerInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
 			}
 			break;
 		default:
@@ -296,6 +338,7 @@ void movePlayer(PlayerType _type, Direction _direction)
 				isAnimFinished = sfTrue;
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
+				setPlayerInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
 			}
 			break;
 		case FALL:
@@ -304,6 +347,7 @@ void movePlayer(PlayerType _type, Direction _direction)
 				isAnimFinished = sfTrue;
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
+				setPlayerInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
 			}
 			break;
 		default:

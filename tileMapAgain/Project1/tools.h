@@ -29,6 +29,7 @@ sfTime sftime;
 sfClock* sfclock;
 
 sfVector2f vector2f(float _x, float _y);
+sfVector2i vector2i(int _x, int _y);
 int iRand(int _min, int _max);
 void initTools();
 void restartClock();

@@ -6,6 +6,12 @@ sfVector2f vector2f(float _x, float _y)
     return v;
 }
 
+sfVector2i vector2i(int _x, int _y)
+{
+    sfVector2i v = { _x, _y };
+    return v;
+}
+
 int iRand(int _min, int _max)
 {
     return rand() % (_max - _min + 1) + _min;
