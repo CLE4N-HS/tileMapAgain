@@ -48,6 +48,6 @@ void updatePlayer();
 void displayPlayer(sfRenderTexture* _texture);
 sfVector2i getCurrentBlockPos(PlayerType _type);
 sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction);
-void setPlayerInBlock(PlayerType _type, int _x, int _y);
+void setPlayerPosInBlock(PlayerType _type, int _x, int _y);
 void movePlayer(PlayerType _type, Direction _direction);
 void applyGravity();

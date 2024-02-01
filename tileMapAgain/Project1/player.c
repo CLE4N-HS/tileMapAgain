@@ -43,11 +43,11 @@ void initPlayer()
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
 			player[i].origin = vector2f(16.f, 32.f);
-			player[i].pos = vector2f(3.f * BLOCK_SIZE + player[i].origin.x * 2.f, 3.f * BLOCK_SIZE + player[i].origin.y * 2.f);
+			setPlayerPosInBlock(i, 1, 3);
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerInBlock(BIRD, 3, 3);
+			setPlayerPosInBlock(i, 4, 2);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 
@@ -253,8 +253,17 @@ void updatePlayer()
 
 void displayPlayer(sfRenderTexture* _texture)
 {
+	// +2 & -2 to smooth the pos with the 2pixel border
+	//player[BIRD].pos.y += 2.f;
+	//sfSprite_setPosition(player2Sprite, player[BIRD].pos);
 	sfRenderTexture_drawSprite(_texture, player2Sprite, NULL);
+	//player[BIRD].pos.y -= 2.f;
+
+	//player[FROG].pos.y += 2.f;
+	//sfSprite_setPosition(playerSprite, player[FROG].pos);
 	sfRenderTexture_drawSprite(_texture, playerSprite, NULL);
+	///player[FROG].pos.y -= 2.f;
+
 }
 
 sfVector2i getCurrentBlockPos(PlayerType _type)
@@ -301,7 +310,7 @@ void applyGravity()
 
 }
 
-void setPlayerInBlock(PlayerType _type, int _x, int _y)
+void setPlayerPosInBlock(PlayerType _type, int _x, int _y)
 {
 	player[_type].pos.x = (int)BLOCK_SIZE * _x + (int)player[_type].origin.x * 2;
 	player[_type].pos.y = (int)BLOCK_SIZE * _y + (int)player[_type].origin.y * 2;
@@ -321,7 +330,7 @@ void movePlayer(PlayerType _type, Direction _direction)
 				isAnimFinished = sfTrue;
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
-				setPlayerInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
+				setPlayerPosInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
 			}
 			break;
 		default:
@@ -338,7 +347,7 @@ void movePlayer(PlayerType _type, Direction _direction)
 				isAnimFinished = sfTrue;
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
-				setPlayerInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
+				setPlayerPosInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
 			}
 			break;
 		case FALL:
@@ -347,7 +356,7 @@ void movePlayer(PlayerType _type, Direction _direction)
 				isAnimFinished = sfTrue;
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
-				setPlayerInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
+				setPlayerPosInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
 			}
 			break;
 		default:

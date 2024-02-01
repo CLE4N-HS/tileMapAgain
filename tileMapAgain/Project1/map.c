@@ -1,24 +1,29 @@
 #include "map.h"
 
-char map[MAP_WIDTH][MAP_HEIGHT] = { {10,10,10,10,10,10,10,5,10,10},
-									{10,10,10,10,10,10,10,10,10,10},
-									{10,10,10,10,10,10,10,10,10,10},
-									{10,10,10,10,10,10,10,10,10,10},
-									{5,10,10,10,10,10,10,10,10,10},
-									{5,5,5,5,5,5,5,5,5,5},
-									{5,5,5,5,5,5,5,5,5,5},
-									{5,5,5,5,5,5,5,5,5,5},
-									{5,5,5,5,5,5,5,5,5,5},
-									{5,5,5,5,5,5,5,5,5,5} };
+char map[MAP_WIDTH][MAP_HEIGHT] = { {25,18,18,18,18,18,18,18,18,27},
+									{11,39,10,10,10,10,10,10,40,9},
+									{11,10,10,10,10,10,10,37,38,9},
+									{11,10,10,10,10,10,10,10,10,9},
+									{11,36,37,37,10,10,10,6,16,9},
+									{41,2,2,2,2,2,2,2,2,43},
+									{9,9,9,9,9,9,9,9,9,9},
+									{9,9,9,9,9,9,9,9,9,9},
+									{9,9,9,9,9,9,9,9,9,9},
+									{9,9,9,9,9,9,9,9,9,9} };
 
 sfSprite* tile;
 sfTexture* tileTexture;
+sfRectangleShape* bgRectangle;
 
 void initMap()
 {
 	tile = sfSprite_create();
 	tileTexture = sfTexture_createFromFile(TILES_PATH"CastleTiles.png", NULL);
 	sfSprite_setTexture(tile, tileTexture, sfTrue);
+
+	bgRectangle = sfRectangleShape_create();
+	sfRectangleShape_setSize(bgRectangle, vector2f(1920.f, 1080.f));
+	sfRectangleShape_setFillColor(bgRectangle, sfColor_fromRGB(6, 5, 13));
 
 	for (int j = 0; j < MAP_HEIGHT; j++)
 	{
@@ -29,26 +34,14 @@ void initMap()
 			block[j][i].rect.height = 32;
 			block[j][i].scale = vector2f(BLOCK_SIZE / 32, BLOCK_SIZE / 32);
 			block[j][i].pos = vector2f(i * block[j][i].rect.width * block[j][i].scale.x, j * block[j][i].rect.height * block[j][i].scale.y);
-			switch (map[j][i])
-			{
-			case 0:
-				block[j][i].rect.left = 0;
-				block[j][i].rect.top = 0;
-				break;
-			case 1:
-				block[j][i].rect.left = block[j][i].rect.width;
-				break;
-			case 5:
-				block[j][i].rect.left = block[j][i].rect.width * 5;
-				break;
-			case 10:
-				block[j][i].rect.left = 10 % 8 * block[j][i].rect.width;
-				block[j][i].rect.top = 1 * block[j][i].rect.height;
-			default:
-				break;
-			}
 
-			sfSprite_setScale(tile, block[j][i].scale);
+			block[j][i].rect.left = map[j][i] % 8 * block[j][i].rect.width;
+			block[j][i].rect.top = map[j][i] / 8 * block[j][i].rect.height;
+			if (block[j][i].rect.left == 0) {
+				block[j][i].rect.left = 7 * block[j][i].rect.width;
+				block[j][i].rect.top -= block[j][i].rect.height;
+			}
+			else block[j][i].rect.left -= block[j][i].rect.width;
 
 
 		}
@@ -69,11 +62,13 @@ void updateMap()
 
 void displayMap(sfRenderTexture* _texture)
 {
+	sfRenderTexture_drawRectangleShape(_texture, bgRectangle, NULL);
 	for (int j = 0; j < MAP_HEIGHT; j++)
 	{
 		for (int i = 0; i < MAP_WIDTH; i++)
 		{
 			sfSprite_setTextureRect(tile, block[j][i].rect);
+			sfSprite_setScale(tile, block[j][i].scale);
 			sfSprite_setPosition(tile, block[j][i].pos);
 			sfRenderTexture_drawSprite(_texture, tile, NULL);
 		}

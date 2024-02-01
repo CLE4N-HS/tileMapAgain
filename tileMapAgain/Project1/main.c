@@ -3,7 +3,7 @@
 void main(){
 	sfVideoMode mode = { 1920, 1080, 32 };
 	sfRenderWindow* window;
-	window = sfRenderWindow_create(mode, "Window", sfDefaultStyle, NULL);
+	window = sfRenderWindow_create(mode, "Window", sfFullscreen, NULL);
 
 	sfSprite* allSprites = sfSprite_create();
 	sfRenderTexture* renderTexture = sfRenderTexture_create(1920, 1080, sfFalse);
@@ -32,7 +32,7 @@ void main(){
 		updateView();
 
 
-		sfRenderTexture_clear(renderTexture, sfBlack);
+		sfRenderTexture_clear(renderTexture, sfBlue);
 
 		displayMap(renderTexture);
 		displayPlayer(renderTexture);
@@ -44,7 +44,7 @@ void main(){
 		allTextures = sfRenderTexture_getTexture(renderTexture);
 		sfSprite_setTexture(allSprites, allTextures, sfFalse);
 
-		sfRenderWindow_clear(window, sfBlack);
+		sfRenderWindow_clear(window, sfBlue);
 
 		sfRenderWindow_drawSprite(window, allSprites, NULL);
 
