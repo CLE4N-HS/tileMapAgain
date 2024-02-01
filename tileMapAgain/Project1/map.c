@@ -1,10 +1,10 @@
 #include "map.h"
 
-char map[MAP_WIDTH][MAP_HEIGHT] = { {1,1,1,1,1,1,1,5,1,1},
-									{1,1,1,1,1,1,1,1,1,1},
-									{1,1,1,1,1,1,1,1,1,1},
-									{1,1,1,1,1,1,1,1,1,1},
-									{5,1,1,1,1,1,1,1,1,1},
+char map[MAP_WIDTH][MAP_HEIGHT] = { {10,10,10,10,10,10,10,5,10,10},
+									{10,10,10,10,10,10,10,10,10,10},
+									{10,10,10,10,10,10,10,10,10,10},
+									{10,10,10,10,10,10,10,10,10,10},
+									{5,10,10,10,10,10,10,10,10,10},
 									{5,5,5,5,5,5,5,5,5,5},
 									{5,5,5,5,5,5,5,5,5,5},
 									{5,5,5,5,5,5,5,5,5,5},
@@ -17,7 +17,7 @@ sfTexture* tileTexture;
 void initMap()
 {
 	tile = sfSprite_create();
-	tileTexture = sfTexture_createFromFile(TEXTURE_PATH"tileset1.png", NULL);
+	tileTexture = sfTexture_createFromFile(TILES_PATH"CastleTiles.png", NULL);
 	sfSprite_setTexture(tile, tileTexture, sfTrue);
 
 	for (int j = 0; j < MAP_HEIGHT; j++)
@@ -25,7 +25,6 @@ void initMap()
 		for (int i = 0; i < MAP_WIDTH; i++)
 		{
 			block[j][i].id = i + (j * MAP_HEIGHT);
-			block[j][i].rect.top = 0;
 			block[j][i].rect.width = 32;
 			block[j][i].rect.height = 32;
 			block[j][i].scale = vector2f(BLOCK_SIZE / 32, BLOCK_SIZE / 32);
@@ -34,6 +33,7 @@ void initMap()
 			{
 			case 0:
 				block[j][i].rect.left = 0;
+				block[j][i].rect.top = 0;
 				break;
 			case 1:
 				block[j][i].rect.left = block[j][i].rect.width;
@@ -41,6 +41,9 @@ void initMap()
 			case 5:
 				block[j][i].rect.left = block[j][i].rect.width * 5;
 				break;
+			case 10:
+				block[j][i].rect.left = 10 % 8 * block[j][i].rect.width;
+				block[j][i].rect.top = 1 * block[j][i].rect.height;
 			default:
 				break;
 			}

@@ -20,6 +20,7 @@
 #define LERP(a,b,t) (b-a)t+a
 
 #define TEXTURE_PATH "../Ressources/Textures/"
+#define TILES_PATH TEXTURE_PATH "Tiles/"
 #define AUDIO_PATH "../Ressources/SoundsFX/"
 #define FROG_PATH TEXTURE_PATH "Player/Ninja Frog/"
 #define VIRTUALGUY_PATH TEXTURE_PATH "Player/Virtual Guy/"
