@@ -1,6 +1,6 @@
 #include "map.h"
 
-char map[MAP_WIDTH][MAP_HEIGHT] = { {25,18,18,18,18,18,18,18,18,27},
+char map[10][10] = { {25,18,18,18,18,18,18,18,18,27},
 									{11,39,10,10,10,10,10,10,40,9},
 									{11,10,10,10,10,10,10,37,38,9},
 									{11,10,10,10,10,10,10,10,10,9},
@@ -25,11 +25,20 @@ void initMap()
 	sfRectangleShape_setSize(bgRectangle, vector2f(1920.f, 1080.f));
 	sfRectangleShape_setFillColor(bgRectangle, sfColor_fromRGB(6, 5, 13));
 
-	for (int j = 0; j < MAP_HEIGHT; j++)
+	mapHeight = 10;
+	mapWidth = 10;
+
+	block = malloc(mapHeight * sizeof(BlocksTileMap));
+	for (int i = 0; i < mapWidth; i++)
 	{
-		for (int i = 0; i < MAP_WIDTH; i++)
+		block[i] = malloc(mapWidth * sizeof(BlocksTileMap));
+	}
+	
+	for (int j = 0; j < mapHeight; j++)
+	{
+		for (int i = 0; i < mapWidth; i++)
 		{
-			block[j][i].id = i + (j * MAP_HEIGHT);
+			block[j][i].id = i + (j * mapHeight);
 			block[j][i].rect.width = 32;
 			block[j][i].rect.height = 32;
 			block[j][i].scale = vector2f(BLOCK_SIZE / 32, BLOCK_SIZE / 32);
@@ -51,9 +60,9 @@ void initMap()
 
 void updateMap()
 {
-	for (int j = 0; j < MAP_HEIGHT; j++)
+	for (int j = 0; j < mapHeight; j++)
 	{
-		for (int i = 0; i < MAP_WIDTH; i++)
+		for (int i = 0; i < mapWidth; i++)
 		{
 
 		}
@@ -63,9 +72,9 @@ void updateMap()
 void displayMap(sfRenderTexture* _texture)
 {
 	sfRenderTexture_drawRectangleShape(_texture, bgRectangle, NULL);
-	for (int j = 0; j < MAP_HEIGHT; j++)
+	for (int j = 0; j < mapHeight; j++)
 	{
-		for (int i = 0; i < MAP_WIDTH; i++)
+		for (int i = 0; i < mapWidth; i++)
 		{
 			sfSprite_setTextureRect(tile, block[j][i].rect);
 			sfSprite_setScale(tile, block[j][i].scale);

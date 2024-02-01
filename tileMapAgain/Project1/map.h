@@ -1,8 +1,8 @@
 #pragma once
 #include "tools.h"
 
-#define MAP_WIDTH 10
-#define MAP_HEIGHT 10
+//#define MAP_WIDTH 10
+//#define MAP_HEIGHT 10
 #define BLOCK_SIZE 64.f
 
 typedef struct BlocksTileMap {
@@ -11,9 +11,15 @@ typedef struct BlocksTileMap {
 	sfVector2f scale;
 	sfVector2i iPos;
 	sfIntRect rect;
-	sfBool collide;
+	sfBool isSolid;
+	int layer;
+	sfBool canGoUnder;
 }BlocksTileMap;
-BlocksTileMap block[MAP_HEIGHT][MAP_WIDTH];
+BlocksTileMap** block;
+//BlocksTileMap block[MAP_HEIGHT][MAP_WIDTH];
+
+int mapWidth;
+int mapHeight;
 
 void initMap();
 void updateMap();
