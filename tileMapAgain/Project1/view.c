@@ -8,7 +8,7 @@ void initView()
 {
 	gameView = sfView_create();
 	sfView_setCenter(gameView, player[FROG].pos);
-	gameViewRatio = vector2f(MAP_WIDTH_IN_PIXELS / 3.f, MAP_HEIGHT_IN_PIXELS / 3.f);
+	gameViewRatio = vector2f(1920 / 3.f, 1080 / 3.f);
 	sfView_setSize(gameView, gameViewRatio);
 
 	viewLerpTimer = VIEW_LERP_TIMER_DURATION;
@@ -32,8 +32,25 @@ void updateView()
 	default:
 		break;
 	}
+
+	if (gameViewPos.x < gameViewRatio.x) {
+		if (gameViewPos.y < gameViewRatio.y) gameViewPos = DivideVector(gameViewRatio, 2.f);
+		else if (gameViewPos.y > 1080.f - gameViewRatio.y) {
+			gameViewPos.x = gameViewRatio.x / 2.f;
+			gameViewPos.y = 1080.f - gameViewRatio.y;
+		}
+		else {
+			gameViewPos.x = gameViewRatio.x / 2.f;
+			gameViewPos.y = player[getViewFocus()].pos.y;
+		}
+
+	}
+	//if (gameViewPos.y < gameViewRatio.y) {
+	//	if (gameViewPos.x < gameViewRatio.x) gameViewPos = DivideVector(gameViewRatio, 2.f);
+	//}
+
 	sfView_setCenter(gameView, gameViewPos);
-	//if (gameViewPos.x < gameViewRatio.x)
+	sfView_setCenter(gameView, player[getViewFocus()].pos);
 }
 
 void displayView(sfRenderWindow* _window)
@@ -55,3 +72,10 @@ float getViewTimer()
 {
 	return viewLerpTimer;
 }
+
+//sfVector2f getPlayerPosInBounds(PlayerType _type)
+//{
+//	sfVector2f v = player[_type].pos;
+//	//if (v.x < gameViewRatio.x)
+//	return v;
+//}

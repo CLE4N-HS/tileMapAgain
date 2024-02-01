@@ -129,6 +129,12 @@ sfVector2f MultiplyVector(sfVector2f _vector, float _multiplier)
     return v;
 }
 
+sfVector2f DivideVector(sfVector2f _vector, float _divisor)
+{
+    sfVector2f v = { _vector.x / _divisor, _vector.y / _divisor };
+    return v;
+}
+
 /// <summary>
 /// Get the angle between two vectors
 /// </summary>

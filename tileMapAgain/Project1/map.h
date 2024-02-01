@@ -2,9 +2,9 @@
 #include "tools.h"
 #include "math.h"
 
-#define MAP_WIDTH_IN_PIXELS 1920
-#define MAP_HEIGHT_IN_PIXELS 1080
 #define BLOCK_SIZE 64.f
+//#define MAP_WIDTH_IN_PIXELS 1920
+//#define MAP_HEIGHT_IN_PIXELS 1080
 
 typedef struct BlocksTileMap {
 	int id;

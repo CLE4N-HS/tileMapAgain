@@ -15,7 +15,8 @@ float DotProduct(sfVector2f _v1, sfVector2f _v2);
 float GetMagnitude(sfVector2f _vector);
 sfVector2f Normalize(sfVector2f _vector);
 float GetSqrMagnitude(sfVector2f _vector);
-sfVector2f MultiplyVector(sfVector2f _vector, float _multiply);
+sfVector2f MultiplyVector(sfVector2f _vector, float _multiplier);
+sfVector2f DivideVector(sfVector2f _vector, float _divisor);
 float GetAngleBetweenVectors(sfVector2f _v1, sfVector2f _v2);
 
 sfBool Equals(sfVector2f _v1, sfVector2f _v2);

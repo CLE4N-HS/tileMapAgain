@@ -14,3 +14,4 @@ sfVector2f lerpView(sfVector2f _basePos, sfVector2f _neededPos, float _timer);
 
 void setViewTimer();
 float getViewTimer();
+//sfVector2f getPlayerPosInBounds(PlayerType _type);

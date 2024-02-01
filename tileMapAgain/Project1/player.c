@@ -198,9 +198,9 @@ void updatePlayer()
 
 		//canMove
 		if (player[i].animState == IDLE) allIdles++;
-		if (sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allIdles++;
-		if (allIdles >= nb_players + 1 /*&& moveTimer >= 0.1*/) allowedToMove = sfTrue;
-		else if (allIdles != nb_players) allowedToMove = sfFalse;
+		//if (sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allIdles++;
+		if (allIdles >= nb_players /*&& moveTimer >= 0.1*/) allowedToMove = sfTrue;
+		else allowedToMove = sfFalse;
 
 		//if (isAnimFinished && sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allowedToMove = sfTrue;
 		//else allowedToMove = sfFalse;
