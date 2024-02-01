@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
+    <ClCompile Include="math.c" />
     <ClCompile Include="player.c" />
     <ClCompile Include="player2.c" />
     <ClCompile Include="tools.c" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="map.h" />
+    <ClInclude Include="math.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player2.h" />
     <ClInclude Include="tools.h" />

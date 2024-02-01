@@ -1,5 +1,6 @@
 #pragma once
 #include "tools.h"
+#include "math.h"
 
 #define ANIM_TIME_DURATION 0.25f
 
@@ -51,5 +52,9 @@ sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction);
 void setPlayerPosInBlock(PlayerType _type, int _x, int _y);
 void movePlayer(PlayerType _type, Direction _direction);
 void setViewFocus(PlayerType _type);
-PlayerType* getViewFocus();
+PlayerType getViewFocus();
+void setLastPlayerFocused(PlayerType _type);
+PlayerType getLastPlayerFocused();
+void setBasePlayerPos(PlayerType _type);
+sfVector2f getBasePlayerPos();
 void applyGravity();

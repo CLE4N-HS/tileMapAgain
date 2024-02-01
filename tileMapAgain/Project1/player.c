@@ -18,7 +18,10 @@ float moveTimer;
 float waitMoveTimer;
 int allIdles;
 
-PlayerType* playerFocused;
+PlayerType playerFocused;
+sfVector2f basePlayerPos;
+PlayerType lastPlayerFocused;
+
 
 
 void initPlayer()
@@ -52,6 +55,7 @@ void initPlayer()
 			setPlayerPosInBlock(i, 4, 2);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
+		player[i].tmpPos = player[i].pos;
 
 
 
@@ -79,10 +83,12 @@ void initPlayer()
 	moveTimer = 0.f;
 	waitMoveTimer = 0.f;
 
-	isAnimFinished = sfFalse;
+	isAnimFinished = sfTrue;
 	allIdles = 0;
 
-	//setViewFocus(FROG);
+	setViewFocus(FROG);
+	setBasePlayerPos(FROG);
+	lastPlayerFocused = FROG;
 }
 
 void updatePlayer()
@@ -106,22 +112,22 @@ void updatePlayer()
 	if ((sfKeyboard_isKeyPressed(sfKeyZ) || sfKeyboard_isKeyPressed(sfKeyUp)) && allowedToMove) {
 		player[BIRD].animState = JUMP;
 		//player[BIRD].flip = sfTrue;
-		//setViewFocus(BIRD);
+		setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyS) || sfKeyboard_isKeyPressed(sfKeyDown)) && allowedToMove) {
 		player[BIRD].animState = FALL;
 		//player[BIRD].flip = sfFalse;
-		//setViewFocus(BIRD);
+		setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyQ) || sfKeyboard_isKeyPressed(sfKeyLeft)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfTrue;
-		//setViewFocus(FROG);
+		setViewFocus(FROG);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyD) || sfKeyboard_isKeyPressed(sfKeyRight)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfFalse;
-		//setViewFocus(FROG);
+		setViewFocus(FROG);
 	}
 	//else {
 	//	player[FROG].animState = IDLE;
@@ -190,10 +196,14 @@ void updatePlayer()
 
 		}
 
-		// canMove
+		//canMove
 		if (player[i].animState == IDLE) allIdles++;
-		if (allIdles == nb_players /*&& moveTimer >= 0.1*/) allowedToMove = sfTrue;
+		if (sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allIdles++;
+		if (allIdles >= nb_players + 1 /*&& moveTimer >= 0.1*/) allowedToMove = sfTrue;
 		else if (allIdles != nb_players) allowedToMove = sfFalse;
+
+		//if (isAnimFinished && sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allowedToMove = sfTrue;
+		//else allowedToMove = sfFalse;
 
 		player[i].animTimer += getDeltaTime();
 
@@ -326,7 +336,7 @@ void setPlayerPosInBlock(PlayerType _type, int _x, int _y)
 
 void movePlayer(PlayerType _type, Direction _direction)
 {
-	isAnimFinished = sfFalse;
+	//isAnimFinished = sfFalse;
 	switch (_type) {
 	case FROG:
 		
@@ -377,12 +387,34 @@ void movePlayer(PlayerType _type, Direction _direction)
 	}
 }
 
-//void setViewFocus(PlayerType _type)
-//{
-//	*playerFocused = _type;
-//}
-//
-//PlayerType* getViewFocus()
-//{
-//	return playerFocused;
-//}
+void setViewFocus(PlayerType _type)
+{
+	playerFocused = _type;
+	setBasePlayerPos(_type);
+}
+
+PlayerType getViewFocus()
+{
+	return playerFocused;
+}
+
+void setLastPlayerFocused(PlayerType _type)
+{
+	lastPlayerFocused = _type;
+}
+
+PlayerType getLastPlayerFocused()
+{
+	return lastPlayerFocused;
+}
+
+void setBasePlayerPos(PlayerType _type)
+{
+	basePlayerPos = player[_type].pos;
+	setViewTimer();
+}
+
+sfVector2f getBasePlayerPos()
+{
+	return basePlayerPos;
+}

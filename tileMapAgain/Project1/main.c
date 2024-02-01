@@ -16,6 +16,8 @@ void main(){
 
 	sfEvent event;
 
+	//sfWindow_setFramerateLimit(window, 60);
+
 	while (sfRenderWindow_isOpen(window))
 	{
 		restartClock();
