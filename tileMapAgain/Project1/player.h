@@ -50,4 +50,6 @@ sfVector2i getCurrentBlockPos(PlayerType _type);
 sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction);
 void setPlayerPosInBlock(PlayerType _type, int _x, int _y);
 void movePlayer(PlayerType _type, Direction _direction);
+void setViewFocus(PlayerType _type);
+PlayerType* getViewFocus();
 void applyGravity();

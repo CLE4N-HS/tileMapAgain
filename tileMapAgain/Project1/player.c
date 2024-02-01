@@ -18,6 +18,8 @@ float moveTimer;
 float waitMoveTimer;
 int allIdles;
 
+PlayerType* playerFocused;
+
 
 void initPlayer()
 {
@@ -79,6 +81,8 @@ void initPlayer()
 
 	isAnimFinished = sfFalse;
 	allIdles = 0;
+
+	//setViewFocus(FROG);
 }
 
 void updatePlayer()
@@ -102,18 +106,22 @@ void updatePlayer()
 	if ((sfKeyboard_isKeyPressed(sfKeyZ) || sfKeyboard_isKeyPressed(sfKeyUp)) && allowedToMove) {
 		player[BIRD].animState = JUMP;
 		//player[BIRD].flip = sfTrue;
+		//setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyS) || sfKeyboard_isKeyPressed(sfKeyDown)) && allowedToMove) {
 		player[BIRD].animState = FALL;
 		//player[BIRD].flip = sfFalse;
+		//setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyQ) || sfKeyboard_isKeyPressed(sfKeyLeft)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfTrue;
+		//setViewFocus(FROG);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyD) || sfKeyboard_isKeyPressed(sfKeyRight)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfFalse;
+		//setViewFocus(FROG);
 	}
 	//else {
 	//	player[FROG].animState = IDLE;
@@ -368,3 +376,13 @@ void movePlayer(PlayerType _type, Direction _direction)
 		break;
 	}
 }
+
+//void setViewFocus(PlayerType _type)
+//{
+//	*playerFocused = _type;
+//}
+//
+//PlayerType* getViewFocus()
+//{
+//	return playerFocused;
+//}
