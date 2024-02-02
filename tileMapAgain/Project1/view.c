@@ -7,8 +7,9 @@ sfVector2f gameViewRatio;
 void initView()
 {
 	gameView = sfView_create();
-	sfView_setCenter(gameView, player[FROG].pos);
-	gameViewRatio = vector2f(1920 / 3.f, 1080 / 3.f);
+	gameViewPos = player[FROG].pos;
+	sfView_setCenter(gameView, gameViewPos);
+	gameViewRatio = vector2f(1920.f / 3.f, 1080.f / 3.f);
 	sfView_setSize(gameView, gameViewRatio);
 
 	viewLerpTimer = VIEW_LERP_TIMER_DURATION;
@@ -35,21 +36,22 @@ void updateView()
 		break;
 	}
 
-	//if (gameViewPos.x < gameViewRatio.x) {
-	//	if (gameViewPos.y < gameViewRatio.y) gameViewPos = DivideVector(gameViewRatio, 2.f);
-	//	else if (gameViewPos.y > 1080.f - gameViewRatio.y) {
-	//		gameViewPos.x = gameViewRatio.x / 2.f;
-	//		gameViewPos.y = 1080.f - gameViewRatio.y;
-	//	}
-	//	else {
-	//		gameViewPos.x = gameViewRatio.x / 2.f;
-	//		gameViewPos.y = player[getViewFocus()].pos.y;
-	//	}
-	//
-	//}
-	//if (gameViewPos.y < gameViewRatio.y) {
-	//	if (gameViewPos.x < gameViewRatio.x) gameViewPos = DivideVector(gameViewRatio, 2.f);
-	//}
+	if (gameViewPos.x < gameViewRatio.x) {
+		//viewLerpTimer = VIEW_LERP_TIMER_DURATION;
+		if (gameViewPos.y < gameViewRatio.y / 2.f) gameViewPos = DivideVector(gameViewRatio, 2.f);
+		else if (gameViewPos.y > 1080.f - gameViewRatio.y / 2.f) {
+			gameViewPos.x = gameViewRatio.x / 2.f;
+			gameViewPos.y = 1080.f - gameViewRatio.y / 2.f;
+		}
+		else {
+			gameViewPos.x = gameViewRatio.x / 2.f;
+			gameViewPos.y = player[getViewFocus()].pos.y;
+		}
+	
+	}
+	if (gameViewPos.y < gameViewRatio.y) {
+		if (gameViewPos.x < gameViewRatio.x) gameViewPos = DivideVector(gameViewRatio, 2.f);
+	}
 
 	sfView_setCenter(gameView, gameViewPos);
 	//sfView_setCenter(gameView, player[getViewFocus()].pos);
@@ -62,7 +64,27 @@ void displayView(sfRenderWindow* _window)
 
 sfVector2f lerpView(sfVector2f _basePos, sfVector2f _neededPos, float _timer)
 {
-	return LerpVector(_basePos, _neededPos, _timer * 1 / VIEW_LERP_TIMER_DURATION);
+	//if (gameViewPos.x < gameViewRatio.x) {
+	//	//viewLerpTimer = VIEW_LERP_TIMER_DURATION;
+	//	if (gameViewPos.y < gameViewRatio.y / 2.f) { // top left
+	//		_neededPos = DivideVector(gameViewRatio, 2.f);
+	//		_basePos = _neededPos;
+	//		//viewLerpTimer = VIEW_LERP_TIMER_DURATION;
+	//	}
+	//	else if (gameViewPos.y > 1080.f - gameViewRatio.y / 2.f) { // bottom left
+	//		_neededPos.x = gameViewRatio.x / 2.f;
+	//		_neededPos.y = 1080.f - gameViewRatio.y / 2.f;
+	//		_basePos = _neededPos;
+	//		//viewLerpTimer = VIEW_LERP_TIMER_DURATION;
+	//	}
+	//	else { // left
+	//		_neededPos.x = gameViewRatio.x / 2.f;
+	//		_neededPos.y = player[getViewFocus()].pos.y;
+	//		_basePos.x = _neededPos.x;
+	//	}
+	//	//return gameViewPos;
+	//}
+	return LerpVector(_basePos, _neededPos, _timer * 1.f / VIEW_LERP_TIMER_DURATION);
 }
 
 void setViewTimer()

@@ -34,7 +34,7 @@ void main(){
 		updateView();
 
 
-		sfRenderTexture_clear(renderTexture, sfBlue);
+		sfRenderTexture_clear(renderTexture, sfColor_fromRGB(6, 5, 13));
 
 		displayMap(renderTexture);
 		displayPlayer(renderTexture);
@@ -46,7 +46,7 @@ void main(){
 		allTextures = sfRenderTexture_getTexture(renderTexture);
 		sfSprite_setTexture(allSprites, allTextures, sfFalse);
 
-		sfRenderWindow_clear(window, sfBlue);
+		sfRenderWindow_clear(window, sfColor_fromRGB(6, 5, 13));
 
 		sfRenderWindow_drawSprite(window, allSprites, NULL);
 

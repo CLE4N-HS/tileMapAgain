@@ -52,7 +52,7 @@ void initPlayer()
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 4, 2);
+			setPlayerPosInBlock(i, 2, 2);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
@@ -207,13 +207,13 @@ void updatePlayer()
 		//if (isAnimFinished && sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allowedToMove = sfTrue;
 		//else allowedToMove = sfFalse;
 
-		player[i].animTimer += getDeltaTime();
 
 		// MOVE
 		if (player[i].animState != IDLE) {
 			movePlayer(i, player[i].animState);
 		}
 
+		player[i].animTimer += getDeltaTime();
 
 
 
