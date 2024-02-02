@@ -52,7 +52,7 @@ void initPlayer()
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 1, 1);
+			setPlayerPosInBlock(i, 28, 15);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
@@ -452,9 +452,9 @@ sfVector2f getPlayerPosInBounds(PlayerType _type, sfVector2f _ratio)
 {
 	sfVector2f v = player[_type].pos;
 
-	// these wouldn't work dynamicly
+	// these wouldn't work dynamicly, (update)it prolly would in fact
 	if (v.x < _ratio.x / 2.f) v.x = _ratio.x / 2.f;
-	if (v.x > (float)mapWidth * BLOCK_SIZE + BLOCK_SIZE - _ratio.x) v.x = (float)mapWidth * BLOCK_SIZE + BLOCK_SIZE - _ratio.x;
+	if (v.x > (float)mapWidth * BLOCK_SIZE - _ratio.x / 2.f) v.x = (float)mapWidth * BLOCK_SIZE - _ratio.x / 2.f;
 	if (v.y < _ratio.y / 2.f) v.y = _ratio.y / 2.f;
 	if (v.y > (float)mapHeight * BLOCK_SIZE - _ratio.y / 2.f) v.y = (float)mapHeight * BLOCK_SIZE - _ratio.y / 2.f;
 
