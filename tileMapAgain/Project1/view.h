@@ -12,6 +12,6 @@ void updateView();
 void displayView(sfRenderWindow* _window);
 sfVector2f lerpView(sfVector2f _basePos, sfVector2f _neededPos, float _timer);
 
-void setViewTimer();
+void setViewTimer(float _time);
 float getViewTimer();
 //sfVector2f getPlayerPosInBounds(PlayerType _type);

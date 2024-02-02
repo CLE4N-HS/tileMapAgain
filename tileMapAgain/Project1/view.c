@@ -19,42 +19,23 @@ void updateView()
 {
 	viewLerpTimer += getDeltaTime();
 	if (viewLerpTimer > VIEW_LERP_TIMER_DURATION) viewLerpTimer = VIEW_LERP_TIMER_DURATION;
-	switch (getViewFocus()) {
-	case FROG:
-		//sfView_setCenter(gameView, lerpView(getBasePlayerPos(), player[FROG].pos, viewLerpTimer));
-		gameViewPos = lerpView(player[getLastPlayerFocused()].pos, player[FROG].pos, viewLerpTimer);
-		//gameViewPos = lerpView(player[getLastPlayerFocused()].pos, getWantedBlockPos(FROG), viewLerpTimer);
-		if (viewLerpTimer >= VIEW_LERP_TIMER_DURATION) setLastPlayerFocused(FROG);
-		break;
-	case BIRD:
-		//sfView_setCenter(gameView, lerpView(getBasePlayerPos(), player[BIRD].pos, viewLerpTimer));
-		gameViewPos = lerpView(player[getLastPlayerFocused()].pos, player[BIRD].pos, viewLerpTimer);
-		//gameViewPos = lerpView(player[getLastPlayerFocused()].pos, getWantedBlockPos(BIRD), viewLerpTimer);
-		if (viewLerpTimer >= VIEW_LERP_TIMER_DURATION) setLastPlayerFocused(BIRD);
-		break;
-	default:
-		break;
-	}
+	//switch (getViewFocus()) {
+	//case FROG:
+	//	gameViewPos = lerpView(getPlayerPosInBounds(getLastPlayerFocused(), gameViewRatio), getPlayerPosInBounds(FROG, gameViewRatio), viewLerpTimer);
+	//	if (viewLerpTimer >= VIEW_LERP_TIMER_DURATION) setLastPlayerFocused(FROG);
+	//	break;
+	//case BIRD:
+	//	gameViewPos = lerpView(getPlayerPosInBounds(getLastPlayerFocused(), gameViewRatio), getPlayerPosInBounds(BIRD, gameViewRatio), viewLerpTimer);
+	//	if (viewLerpTimer >= VIEW_LERP_TIMER_DURATION) setLastPlayerFocused(BIRD);
+	//	break;
+	//default:
+	//	break;
+	//}
 
-	if (gameViewPos.x < gameViewRatio.x) {
-		//viewLerpTimer = VIEW_LERP_TIMER_DURATION;
-		if (gameViewPos.y < gameViewRatio.y / 2.f) gameViewPos = DivideVector(gameViewRatio, 2.f);
-		else if (gameViewPos.y > 1080.f - gameViewRatio.y / 2.f) {
-			gameViewPos.x = gameViewRatio.x / 2.f;
-			gameViewPos.y = 1080.f - gameViewRatio.y / 2.f;
-		}
-		else {
-			gameViewPos.x = gameViewRatio.x / 2.f;
-			gameViewPos.y = player[getViewFocus()].pos.y;
-		}
-	
-	}
-	if (gameViewPos.y < gameViewRatio.y) {
-		if (gameViewPos.x < gameViewRatio.x) gameViewPos = DivideVector(gameViewRatio, 2.f);
-	}
+	gameViewPos = lerpView(getPlayerPosInBounds(getLastPlayerFocused(), gameViewRatio), getPlayerPosInBounds(getViewFocus(), gameViewRatio), viewLerpTimer);
+	if (viewLerpTimer >= VIEW_LERP_TIMER_DURATION) setLastPlayerFocused(getViewFocus());
 
 	sfView_setCenter(gameView, gameViewPos);
-	//sfView_setCenter(gameView, player[getViewFocus()].pos);
 }
 
 void displayView(sfRenderWindow* _window)
@@ -87,9 +68,9 @@ sfVector2f lerpView(sfVector2f _basePos, sfVector2f _neededPos, float _timer)
 	return LerpVector(_basePos, _neededPos, _timer * 1.f / VIEW_LERP_TIMER_DURATION);
 }
 
-void setViewTimer()
+void setViewTimer(float _time)
 {
-	viewLerpTimer = 0.f;
+	viewLerpTimer = _time;
 }
 
 float getViewTimer()

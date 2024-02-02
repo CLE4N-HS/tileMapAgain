@@ -48,11 +48,11 @@ void initPlayer()
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 1, 3);
+			setPlayerPosInBlock(i, 1, 1);
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 2, 2);
+			setPlayerPosInBlock(i, 1, 1);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
@@ -440,10 +440,24 @@ PlayerType getLastPlayerFocused()
 void setBasePlayerPos(PlayerType _type)
 {
 	basePlayerPos = player[_type].pos;
-	setViewTimer();
+	setViewTimer(0.f);
 }
 
 sfVector2f getBasePlayerPos()
 {
 	return basePlayerPos;
 }
+
+sfVector2f getPlayerPosInBounds(PlayerType _type, sfVector2f _ratio)
+{
+	sfVector2f v = player[_type].pos;
+
+	// these wouldn't work dynamicly
+	if (v.x < _ratio.x / 2.f) v.x = _ratio.x / 2.f;
+	if (v.x > (float)mapWidth * BLOCK_SIZE + BLOCK_SIZE - _ratio.x) v.x = (float)mapWidth * BLOCK_SIZE + BLOCK_SIZE - _ratio.x;
+	if (v.y < _ratio.y / 2.f) v.y = _ratio.y / 2.f;
+	if (v.y > (float)mapHeight * BLOCK_SIZE - _ratio.y / 2.f) v.y = (float)mapHeight * BLOCK_SIZE - _ratio.y / 2.f;
+
+	return v;
+}
+

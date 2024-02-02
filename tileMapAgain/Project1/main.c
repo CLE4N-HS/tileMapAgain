@@ -3,10 +3,10 @@
 void main(){
 	sfVideoMode mode = { 1920, 1080, 32 };
 	sfRenderWindow* window;
-	window = sfRenderWindow_create(mode, "Window", sfDefaultStyle, NULL);
+	window = sfRenderWindow_create(mode, "Window", sfFullscreen, NULL);
 
 	sfSprite* allSprites = sfSprite_create();
-	sfRenderTexture* renderTexture = sfRenderTexture_create(1920, 1080, sfFalse);
+	sfRenderTexture* renderTexture = sfRenderTexture_create(1920, 1088, sfFalse); // coz 30 * BLOCK_SIZE & 17 * BLOCK_SIZE (64.f)
 	sfTexture* allTextures;
 
 	initTools();
