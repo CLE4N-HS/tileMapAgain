@@ -196,10 +196,12 @@ void updatePlayer()
 
 		}
 
+		//if (canPlayerMove()) allowedToMove = sfTrue;
+
 		//canMove
 		if (player[i].animState == IDLE) allIdles++;
 		//if (sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allIdles++;
-		if (allIdles >= nb_players /*&& moveTimer >= 0.1*/) allowedToMove = sfTrue;
+		if (allIdles >= nb_players /*&& moveTimer >= 0.1*/ && (getViewTimer() >= VIEW_LERP_TIMER_DURATION || getViewFocus() == getLastPlayerFocused())) allowedToMove = sfTrue;
 		else allowedToMove = sfFalse;
 
 		//if (isAnimFinished && sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allowedToMove = sfTrue;
@@ -284,10 +286,32 @@ void displayPlayer(sfRenderTexture* _texture)
 
 }
 
+sfBool canPlayerMove() // doesn't work but fck it
+{
+	////canMove
+	//if (player[i].animState == IDLE) allIdles++;
+	////if (sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allIdles++;
+	//if (allIdles >= nb_players /*&& moveTimer >= 0.1*/) allowedToMove = sfTrue;
+	//else allowedToMove = sfFalse;
+	if (getViewTimer() >= VIEW_LERP_TIMER_DURATION) return sfTrue;
+	return sfFalse;
+}
+
+sfVector2i convertPosInBlock(sfVector2f _pos)
+{
+	return vector2i((int)_pos.x / (int)BLOCK_SIZE, (int)_pos.y / (int)BLOCK_SIZE - 1);
+}
+
+sfVector2f convertBlockInPos(sfVector2i _block)
+{
+	return vector2f((float)_block.x * BLOCK_SIZE, (float)_block.y * BLOCK_SIZE);
+}
+
 sfVector2i getCurrentBlockPos(PlayerType _type)
 {
 	sfVector2i v;
-	v = vector2i((int)player[_type].pos.x / (int)BLOCK_SIZE, (int)player[_type].pos.y / (int)BLOCK_SIZE - 1);
+	//v = vector2i((int)player[_type].pos.x / (int)BLOCK_SIZE, (int)player[_type].pos.y / (int)BLOCK_SIZE - 1);
+	v = convertPosInBlock(player[_type].pos);
 	player[_type].currentBloc = v;
 	return v;
 }
@@ -316,6 +340,11 @@ sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction)
 	v.y += add.y;
 	player[_type].wantedBloc = v;
 	return v;
+}
+
+sfVector2f getWantedBlockPos(PlayerType _type)
+{
+	return convertBlockInPos(player[_type].wantedBloc);
 }
 
 void applyGravity()

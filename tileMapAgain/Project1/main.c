@@ -3,7 +3,7 @@
 void main(){
 	sfVideoMode mode = { 1920, 1080, 32 };
 	sfRenderWindow* window;
-	window = sfRenderWindow_create(mode, "Window", sfFullscreen, NULL);
+	window = sfRenderWindow_create(mode, "Window", sfDefaultStyle, NULL);
 
 	sfSprite* allSprites = sfSprite_create();
 	sfRenderTexture* renderTexture = sfRenderTexture_create(1920, 1080, sfFalse);
