@@ -51,11 +51,11 @@ void initPlayer()
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 1, 1);
+			setPlayerPosInBlock(i, 1, 3);
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 48.f);
-			setPlayerPosInBlock(i, 1, 1);
+			setPlayerPosInBlock(i, 1, 6);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
@@ -118,40 +118,40 @@ void updatePlayer()
 	if ((sfKeyboard_isKeyPressed(sfKeyZ) || sfKeyboard_isKeyPressed(sfKeyUp)) && allowedToMove) {
 		player[BIRD].animState = JUMP;
 		setWantedBlockPos(BIRD, player[BIRD].animState);
+		setViewFocus(BIRD);
 		if (!canPlayerGoThere(BIRD)) {
 			player[BIRD].animState = IDLE;
 		}
 		//player[BIRD].flip = sfTrue;
-		setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyS) || sfKeyboard_isKeyPressed(sfKeyDown)) && allowedToMove) {
 		player[BIRD].animState = FALL;
 		setWantedBlockPos(BIRD, player[BIRD].animState);
+		setViewFocus(BIRD);
 		if (!canPlayerGoThere(BIRD)) {
 			player[BIRD].animState = IDLE;
 		}
 		//player[BIRD].flip = sfFalse;
-		setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyQ) || sfKeyboard_isKeyPressed(sfKeyLeft)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfTrue;
 		sfSprite_setScale(playerSprite, vector2f(-1.f * player[FROG].scale.x, 1.f * player[FROG].scale.y));
 		setWantedBlockPos(FROG, player[FROG].animState);
+		setViewFocus(FROG);
 		if (!canPlayerGoThere(FROG)) {
 			player[FROG].animState = IDLE;
 		}
-		setViewFocus(FROG);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyD) || sfKeyboard_isKeyPressed(sfKeyRight)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfFalse;
 		sfSprite_setScale(playerSprite, vector2f(1.f * player[FROG].scale.x, 1.f * player[FROG].scale.y));
 		setWantedBlockPos(FROG, player[FROG].animState);
+		setViewFocus(FROG);
 		if (!canPlayerGoThere(FROG)) {
 			player[FROG].animState = IDLE;
 		}
-		setViewFocus(FROG);
 	}
 	//else {
 	//	player[FROG].animState = IDLE;
@@ -503,5 +503,10 @@ sfVector2f getPlayerPosInBounds(PlayerType _type, sfVector2f _ratio)
 	if (v.y > (float)mapHeight * BLOCK_SIZE - _ratio.y / 2.f) v.y = (float)mapHeight * BLOCK_SIZE - _ratio.y / 2.f;
 
 	return v;
+}
+
+Direction getPlayerDirection(PlayerType _type)
+{
+	return player[_type].animState;
 }
 

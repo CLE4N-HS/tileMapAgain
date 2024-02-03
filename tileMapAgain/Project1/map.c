@@ -66,6 +66,7 @@ void initMap()
 			//}
 
 			block[j][i].isSolid = sfFalse;
+			block[j][i].canGoUnder = sfTrue;
 
 			switch (map[j][i])
 			{
@@ -88,6 +89,9 @@ void initMap()
 			case 28: block[j][i].isSolid = sfTrue; break;
 			case 33: block[j][i].isSolid = sfTrue; break;
 			case 35: block[j][i].isSolid = sfTrue; break;
+			case 36: block[j][i].canGoUnder = sfFalse; break;
+			case 37: block[j][i].canGoUnder = sfFalse; break;
+			case 38: block[j][i].canGoUnder = sfFalse; break;
 			case 41: block[j][i].isSolid = sfTrue; break;
 			case 42: block[j][i].isSolid = sfTrue; break;
 			case 43: block[j][i].isSolid = sfTrue; break;
@@ -95,6 +99,8 @@ void initMap()
 			default:
 				break;
 			}
+
+			if (block[j][i].isSolid) block[j][i].canGoUnder = sfFalse;
 		}
 	}
 
@@ -128,7 +134,11 @@ void displayMap(sfRenderTexture* _texture)
 
 sfBool isBlockSolid(sfVector2i _block)
 {
-	if (block[_block.y][_block.x].isSolid == sfTrue) return sfTrue;
+	if (getPlayerDirection(getViewFocus()) == 1 /*DOWN*/) {
+		if (block[_block.y][_block.x].canGoUnder) return sfFalse;
+		else return sfTrue;
+	}
+	if (block[_block.y][_block.x].isSolid) return sfTrue;
 	return sfFalse;
 }
 

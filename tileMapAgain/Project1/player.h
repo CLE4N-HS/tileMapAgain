@@ -63,4 +63,5 @@ PlayerType getLastPlayerFocused();
 void setBasePlayerPos(PlayerType _type);
 sfVector2f getBasePlayerPos();
 sfVector2f getPlayerPosInBounds(PlayerType _type, sfVector2f _ratio);
+Direction getPlayerDirection(PlayerType _type);
 void applyGravity();
