@@ -60,7 +60,41 @@ void initMap()
 			}
 			else block[j][i].rect.left -= block[j][i].rect.width;
 
+			//if (map[j][i] == 10) {
+			//	block[j][i].rect.left = (4 + iRand(0, 1)) * block[j][i].rect.width;
+			//	block[j][i].rect.top = (5 + iRand(0, 10)) * block[j][i].rect.height;
+			//}
 
+			block[j][i].isSolid = sfFalse;
+
+			switch (map[j][i])
+			{
+			case 1: block[j][i].isSolid = sfTrue; break;
+			case 2: block[j][i].isSolid = sfTrue; break;
+			case 3: block[j][i].isSolid = sfTrue; break;
+			case 4: block[j][i].isSolid = sfTrue; break;
+			case 5: block[j][i].isSolid = sfTrue; break;
+			case 9: block[j][i].isSolid = sfTrue; break;
+			case 11: block[j][i].isSolid = sfTrue; break;
+			case 12: block[j][i].isSolid = sfTrue; break;
+			case 13: block[j][i].isSolid = sfTrue; break;
+			case 17: block[j][i].isSolid = sfTrue; break;
+			case 18: block[j][i].isSolid = sfTrue; break;
+			case 19: block[j][i].isSolid = sfTrue; break;
+			case 20: block[j][i].isSolid = sfTrue; break;
+			case 25: block[j][i].isSolid = sfTrue; break;
+			case 26: block[j][i].isSolid = sfTrue; break;
+			case 27: block[j][i].isSolid = sfTrue; break;
+			case 28: block[j][i].isSolid = sfTrue; break;
+			case 33: block[j][i].isSolid = sfTrue; break;
+			case 35: block[j][i].isSolid = sfTrue; break;
+			case 41: block[j][i].isSolid = sfTrue; break;
+			case 42: block[j][i].isSolid = sfTrue; break;
+			case 43: block[j][i].isSolid = sfTrue; break;
+			case 52: block[j][i].isSolid = sfTrue; break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -90,6 +124,12 @@ void displayMap(sfRenderTexture* _texture)
 			sfRenderTexture_drawSprite(_texture, tile, NULL);
 		}
 	}
+}
+
+sfBool isBlockSolid(sfVector2i _block)
+{
+	if (block[_block.y][_block.x].isSolid == sfTrue) return sfTrue;
+	return sfFalse;
 }
 
 //sfBool collisionMapPlayer(sfFloatRect _sprite, int _direction, sfVector2f _vitesse)

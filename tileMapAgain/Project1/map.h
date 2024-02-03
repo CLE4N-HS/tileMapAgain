@@ -25,4 +25,5 @@ int mapHeight;
 void initMap();
 void updateMap();
 void displayMap(sfRenderTexture* _texture);
+sfBool isBlockSolid(sfVector2i _block);
 //sfBool collisionMapPlayer(sfFloatRect _sprite, int _direction, sfVector2f _vitesse);

@@ -51,11 +51,11 @@ void initPlayer()
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 1, 3);
+			setPlayerPosInBlock(i, 1, 1);
 		}
 		else if (i == BIRD) {
 			player[i].origin = vector2f(16.f, 48.f);
-			setPlayerPosInBlock(i, 3, 1);
+			setPlayerPosInBlock(i, 1, 1);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
@@ -117,22 +117,40 @@ void updatePlayer()
 
 	if ((sfKeyboard_isKeyPressed(sfKeyZ) || sfKeyboard_isKeyPressed(sfKeyUp)) && allowedToMove) {
 		player[BIRD].animState = JUMP;
+		setWantedBlockPos(BIRD, player[BIRD].animState);
+		if (!canPlayerGoThere(BIRD)) {
+			player[BIRD].animState = IDLE;
+		}
 		//player[BIRD].flip = sfTrue;
 		setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyS) || sfKeyboard_isKeyPressed(sfKeyDown)) && allowedToMove) {
 		player[BIRD].animState = FALL;
+		setWantedBlockPos(BIRD, player[BIRD].animState);
+		if (!canPlayerGoThere(BIRD)) {
+			player[BIRD].animState = IDLE;
+		}
 		//player[BIRD].flip = sfFalse;
 		setViewFocus(BIRD);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyQ) || sfKeyboard_isKeyPressed(sfKeyLeft)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfTrue;
+		sfSprite_setScale(playerSprite, vector2f(-1.f * player[FROG].scale.x, 1.f * player[FROG].scale.y));
+		setWantedBlockPos(FROG, player[FROG].animState);
+		if (!canPlayerGoThere(FROG)) {
+			player[FROG].animState = IDLE;
+		}
 		setViewFocus(FROG);
 	}
 	else if ((sfKeyboard_isKeyPressed(sfKeyD) || sfKeyboard_isKeyPressed(sfKeyRight)) && allowedToMove) {
 		player[FROG].animState = RUN;
 		player[FROG].flip = sfFalse;
+		sfSprite_setScale(playerSprite, vector2f(1.f * player[FROG].scale.x, 1.f * player[FROG].scale.y));
+		setWantedBlockPos(FROG, player[FROG].animState);
+		if (!canPlayerGoThere(FROG)) {
+			player[FROG].animState = IDLE;
+		}
 		setViewFocus(FROG);
 	}
 	//else {
@@ -172,15 +190,15 @@ void updatePlayer()
 				break;
 			}
 
-			// ROTATION
-			if (i == FROG) {
-				if (player[i].flip) sfSprite_setScale(playerSprite, vector2f(-1.f * player[i].scale.x, 1.f * player[i].scale.y));
-				else if (!player[i].flip) sfSprite_setScale(playerSprite, vector2f(1.f * player[i].scale.x, 1.f * player[i].scale.y));
-			}
-			else if (i == BIRD) {
-				if (player[i].flip) sfSprite_setScale(player2Sprite, vector2f(-1.f * player[i].scale.x, 1.f * player[i].scale.y));
-				else if (!player[i].flip) sfSprite_setScale(player2Sprite, vector2f(1.f * player[i].scale.x, 1.f * player[i].scale.y));
-			}
+			//// ROTATION
+			//if (i == FROG) {
+			//	if (player[i].flip) sfSprite_setScale(playerSprite, vector2f(-1.f * player[i].scale.x, 1.f * player[i].scale.y));
+			//	else if (!player[i].flip) sfSprite_setScale(playerSprite, vector2f(1.f * player[i].scale.x, 1.f * player[i].scale.y));
+			//}
+			//else if (i == BIRD) {
+			//	if (player[i].flip) sfSprite_setScale(player2Sprite, vector2f(-1.f * player[i].scale.x, 1.f * player[i].scale.y));
+			//	else if (!player[i].flip) sfSprite_setScale(player2Sprite, vector2f(1.f * player[i].scale.x, 1.f * player[i].scale.y));
+			//}
 
 
 
@@ -195,8 +213,7 @@ void updatePlayer()
 				waitMoveTimer = 0.f;
 				isAnimFinished = sfFalse;
 				//getCurrentBlockPos(FROG);
-				setWantedBlockPos(i, player[i].animState);
-				printf("%d.x, %d.y ; %d.x, %d.y\n", player[i].currentBloc.x, player[i].currentBloc.y, player[i].wantedBloc.x, player[i].wantedBloc.y);
+				//printf("%d.x, %d.y ; %d.x, %d.y\n", player[i].currentBloc.x, player[i].currentBloc.y, player[i].wantedBloc.x, player[i].wantedBloc.y);
 
 			}
 
@@ -260,15 +277,6 @@ void updatePlayer()
 		default:
 			break;
 		}
-
-
-		//if (player[i].pos.x < 0 + player[i].origin.x) player[i].pos.x = 0 + player[i].origin.x;
-		//if (player[i].pos.y < 0 + player[i].origin.y) player[i].pos.y = 0 + player[i].origin.y;
-		//if (player[i].pos.x > MAP_WIDTH * BLOCK_SIZE - player[i].origin.y) player[i].pos.x = MAP_WIDTH * BLOCK_SIZE - player[i].origin.x;
-		//if (player[i].pos.y > MAP_HEIGHT * BLOCK_SIZE - player[i].origin.y) player[i].pos.y = MAP_HEIGHT * BLOCK_SIZE - player[i].origin.y;
-
-
-
 	}
 
 	// Make the BIRD fly
@@ -323,6 +331,12 @@ sfBool canPlayerMove() // doesn't work but fck it
 	return sfFalse;
 }
 
+sfBool canPlayerGoThere(PlayerType _type)
+{
+	if (isBlockSolid(vector2i(player[_type].wantedBloc.x, player[_type].wantedBloc.y))) return sfFalse;
+	return sfTrue;
+}
+
 sfVector2i convertPosInBlock(sfVector2f _pos)
 {
 	return vector2i((int)_pos.x / (int)BLOCK_SIZE, (int)_pos.y / (int)BLOCK_SIZE - 1);
@@ -342,7 +356,7 @@ sfVector2i getCurrentBlockPos(PlayerType _type)
 	return v;
 }
 
-sfVector2i setWantedBlockPos(PlayerType _type, Direction _direction)
+void setWantedBlockPos(PlayerType _type, Direction _direction)
 {
 	sfVector2i v;
 	sfVector2i add;
