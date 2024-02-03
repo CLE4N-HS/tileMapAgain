@@ -18,6 +18,9 @@ float moveTimer;
 float waitMoveTimer;
 int allIdles;
 
+float birdMovementTimer;
+float invertBirdMovement;
+
 PlayerType playerFocused;
 sfVector2f basePlayerPos;
 PlayerType lastPlayerFocused;
@@ -48,11 +51,11 @@ void initPlayer()
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 1, 1);
+			setPlayerPosInBlock(i, 1, 3);
 		}
 		else if (i == BIRD) {
-			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 28, 15);
+			player[i].origin = vector2f(16.f, 48.f);
+			setPlayerPosInBlock(i, 3, 1);
 		}
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
@@ -89,6 +92,9 @@ void initPlayer()
 	setViewFocus(FROG);
 	setBasePlayerPos(FROG);
 	lastPlayerFocused = FROG;
+
+	birdMovementTimer = 0.f;
+	invertBirdMovement = 1.f;
 }
 
 void updatePlayer()
@@ -265,8 +271,28 @@ void updatePlayer()
 
 	}
 
+	// Make the BIRD fly
+	if (player[BIRD].animState == IDLE) birdMovementTimer += getDeltaTime();
+	if (player[BIRD].lastAnimState == JUMP) {
+		invertBirdMovement = 1.f;
+		player[BIRD].origin.y = 48.f;
+	}
+	else if (player[BIRD].lastAnimState == FALL) {
+		invertBirdMovement = -1.f;
+		player[BIRD].origin.y = 48.f;
+	}
+	if (birdMovementTimer > ANIM_TIME_DURATION / 11.f * 2.f) {
+		if (player[BIRD].origin.y > 56.f) invertBirdMovement = -1.f;
+		if (player[BIRD].origin.y < 40.f) invertBirdMovement = 1.f;
+		player[BIRD].origin.y += 1.f * invertBirdMovement;
+		birdMovementTimer = 0.f;
+	}
+
+
+
 	sfSprite_setPosition(playerSprite, player[FROG].pos);
 	sfSprite_setTextureRect(playerSprite, player[FROG].rect);
+	sfSprite_setOrigin(player2Sprite, player[BIRD].origin);
 	sfSprite_setPosition(player2Sprite, player[BIRD].pos);
 	sfSprite_setTextureRect(player2Sprite, player[BIRD].rect);
 }
@@ -359,8 +385,12 @@ void applyGravity()
 
 void setPlayerPosInBlock(PlayerType _type, int _x, int _y)
 {
-	player[_type].pos.x = (int)BLOCK_SIZE * _x + (int)player[_type].origin.x * 2;
-	player[_type].pos.y = (int)BLOCK_SIZE * _y + (int)player[_type].origin.y * 2;
+	//should work like that but shifting the bird origin to 48 instead of 32 fucked up everything so i'll just keeping it like that
+
+	//player[_type].pos.x = (int)BLOCK_SIZE * _x + (int)player[_type].origin.x * 2;
+	//player[_type].pos.y = (int)BLOCK_SIZE * _y + (int)player[_type].origin.y * 2;
+	player[_type].pos.x = (int)BLOCK_SIZE * _x + 16 * 2;
+	player[_type].pos.y = (int)BLOCK_SIZE * _y + 32 * 2;
 }
 
 void movePlayer(PlayerType _type, Direction _direction)
