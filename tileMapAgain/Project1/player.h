@@ -43,7 +43,7 @@ void initPlayer();
 void updatePlayer();
 void displayPlayer(sfRenderTexture* _texture);
 sfBool canPlayerMove();
-sfBool canPlayerGoThere(PlayerType _type);
+sfBool canPlayerGoThere(PlayerType _type, Direction _direction);
 sfBool isPlayerGrounded(PlayerType _type);
 sfVector2i convertPosInBlock(sfVector2f _pos);
 sfVector2f convertBlockInPos(sfVector2i _block);

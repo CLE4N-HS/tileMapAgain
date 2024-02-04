@@ -63,7 +63,7 @@ void initPlayer()
 		player[i].rect = (sfIntRect){ 0, 0, 32, 32 };
 		player[i].tmpPos = player[i].pos;
 
-
+		player[i].wantedBloc = vector2i(0, 0);
 
 		player[i].flip = sfFalse;
 		player[i].frameX = 0;
@@ -122,7 +122,7 @@ void updatePlayer()
 		player[BIRD].animState = JUMP;
 		setWantedBlockPos(BIRD, player[BIRD].animState);
 		setViewFocus(BIRD);
-		if (!canPlayerGoThere(BIRD)) {
+		if (!canPlayerGoThere(BIRD, player[BIRD].animState)) {
 			player[BIRD].animState = IDLE;
 		}
 		//player[BIRD].flip = sfTrue;
@@ -131,7 +131,7 @@ void updatePlayer()
 		player[BIRD].animState = FALL;
 		setWantedBlockPos(BIRD, player[BIRD].animState);
 		setViewFocus(BIRD);
-		if (!canPlayerGoThere(BIRD)) {
+		if (!canPlayerGoThere(BIRD, player[BIRD].animState)) {
 			player[BIRD].animState = IDLE;
 		}
 		//player[BIRD].flip = sfFalse;
@@ -142,7 +142,7 @@ void updatePlayer()
 		sfSprite_setScale(playerSprite, vector2f(-1.f * player[FROG].scale.x, 1.f * player[FROG].scale.y));
 		setWantedBlockPos(FROG, player[FROG].animState);
 		setViewFocus(FROG);
-		if (!canPlayerGoThere(FROG)) {
+		if (!canPlayerGoThere(FROG, player[FROG].animState)) {
 			player[FROG].animState = IDLE;
 		}
 	}
@@ -152,7 +152,7 @@ void updatePlayer()
 		sfSprite_setScale(playerSprite, vector2f(1.f * player[FROG].scale.x, 1.f * player[FROG].scale.y));
 		setWantedBlockPos(FROG, player[FROG].animState);
 		setViewFocus(FROG);
-		if (!canPlayerGoThere(FROG)) {
+		if (!canPlayerGoThere(FROG, player[FROG].animState)) {
 			player[FROG].animState = IDLE;
 		}
 	}
@@ -350,7 +350,7 @@ sfBool canPlayerMove() // doesn't work but fck it
 	return sfFalse;
 }
 
-sfBool canPlayerGoThere(PlayerType _type)
+sfBool canPlayerGoThere(PlayerType _type, Direction _direction)
 {
 	if (isBlockSolid(vector2i(player[_type].wantedBloc.x, player[_type].wantedBloc.y))) return sfFalse;
 	return sfTrue;
