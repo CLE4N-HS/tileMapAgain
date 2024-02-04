@@ -4,7 +4,6 @@
 
 #define ANIM_TIME_DURATION 0.25f
 
-typedef enum Direction Direction;
 typedef enum Direction {
 	JUMP,
 	FALL,
@@ -32,13 +31,9 @@ typedef struct Player {
 	sfVector2f tmpPos;
 	sfVector2i currentBloc;
 	sfVector2i wantedBloc;
-	sfVector2f speed;
+	sfBool isGrounded;
 	Direction animState;
 	Direction lastAnimState;
-	float gravity;
-	sfVector2f acceleration;
-	sfBool allowedToJump;
-	sfBool allowedToWalk;
 }Player;
 Player* player;
 
@@ -49,6 +44,7 @@ void updatePlayer();
 void displayPlayer(sfRenderTexture* _texture);
 sfBool canPlayerMove();
 sfBool canPlayerGoThere(PlayerType _type);
+sfBool isPlayerGrounded(PlayerType _type);
 sfVector2i convertPosInBlock(sfVector2f _pos);
 sfVector2f convertBlockInPos(sfVector2i _block);
 sfVector2i getCurrentBlockPos(PlayerType _type);

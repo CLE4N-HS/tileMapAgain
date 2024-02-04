@@ -25,7 +25,7 @@ PlayerType playerFocused;
 sfVector2f basePlayerPos;
 PlayerType lastPlayerFocused;
 
-
+sfBool resetTmpPos = sfFalse;
 
 void initPlayer()
 {
@@ -50,10 +50,13 @@ void initPlayer()
 	{
 		player[i].scale = vector2f(1.f, 1.f);
 		if (i == FROG) {
+			player[i].type = FROG;
 			player[i].origin = vector2f(16.f, 32.f);
-			setPlayerPosInBlock(i, 1, 3);
+			setPlayerPosInBlock(i, 3, 3);
+			player[i].isGrounded = sfFalse;
 		}
 		else if (i == BIRD) {
+			player[i].type = BIRD;
 			player[i].origin = vector2f(16.f, 48.f);
 			setPlayerPosInBlock(i, 1, 6);
 		}
@@ -66,11 +69,9 @@ void initPlayer()
 		player[i].frameX = 0;
 
 
-		player[i].speed = vector2f(100.f, 100.f);
 		player[i].animTimer = 0.f;
 		player[i].animState = IDLE;
-		player[i].gravity = 9.81f;
-		player[i].acceleration = vector2f(0.f, 10.f);
+		player[i].lastAnimState = IDLE;
 	}
 
 	sfSprite_setOrigin(playerSprite, player[FROG].origin);
@@ -99,21 +100,23 @@ void initPlayer()
 
 void updatePlayer()
 {
-	//player[FROG].acceleration.y += getDeltaTime();
-	//
-	//if (sfKeyboard_isKeyPressed(sfKeySpace) && player[FROG].allowedToJump) {
-	//	player[FROG].pos.y -= 10.f;
-	//	player[FROG].acceleration.y = -0.2f;
-	//	player[FROG].allowedToJump = sfFalse;
-	//}
-	//if (!sfKeyboard_isKeyPressed(sfKeySpace)) player[FROG].allowedToJump = sfTrue;
-	//
 	//applyGravity();
 	allIdles = 0;
 	moveTimer += getDeltaTime();
 	//printf("%f, %f\n", player[FROG].pos.x, player[FROG].pos.y);
 	//printf("%d, %d\n", player[FROG].currentBloc, player[FROG].wantedBloc);
 
+	if (player[FROG].animState == IDLE && !resetTmpPos) {
+		if (isPlayerGrounded(FROG)) player[FROG].isGrounded = sfTrue;
+		else player[FROG].isGrounded = sfFalse;
+	
+		if (!player[FROG].isGrounded) {
+			player[FROG].animState = FALL;
+			setWantedBlockPos(FROG, player[FROG].animState);
+			allowedToMove = sfFalse;
+			setViewFocus(FROG);
+		}
+	}
 
 	if ((sfKeyboard_isKeyPressed(sfKeyZ) || sfKeyboard_isKeyPressed(sfKeyUp)) && allowedToMove) {
 		player[BIRD].animState = JUMP;
@@ -158,13 +161,18 @@ void updatePlayer()
 	//	player[BIRD].animState = IDLE;
 	//}
 
+
+
 	for (int i = 0; i < nb_players; i++) {
 
 		// INIT ANIMS
 		if (player[i].animState != player[i].lastAnimState) {
 			switch (player[i].animState) {
 			case FALL:
-				if (i == BIRD) {
+				if (i == FROG) {
+					sfSprite_setTexture(playerSprite, playerTextureFall, sfTrue);
+				}
+				else if (i == BIRD) {
 					sfSprite_setTexture(player2Sprite, player2TextureFall, sfTrue);
 				}
 				break;
@@ -205,7 +213,16 @@ void updatePlayer()
 			player[i].rect.top = 0;
 			player[i].rect.left = 0;
 
+			if (resetTmpPos) {
+				player[i].tmpPos = player[i].pos;
+				moveTimer = 0.f;
+				waitMoveTimer = 0.f;
+				isAnimFinished = sfFalse;
+				resetTmpPos = sfFalse;
+			}
+
 			player[i].lastAnimState = player[i].animState;
+
 
 			if (player[i].animState != IDLE) {
 				player[i].tmpPos = player[i].pos;
@@ -226,6 +243,8 @@ void updatePlayer()
 		//if (sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allIdles++;
 		if (allIdles >= nb_players /*&& moveTimer >= 0.1*/ && (getViewTimer() >= VIEW_LERP_TIMER_DURATION || getViewFocus() == getLastPlayerFocused())) allowedToMove = sfTrue;
 		else allowedToMove = sfFalse;
+
+
 
 		//if (isAnimFinished && sfView_getCenter(gameView).x == player[i].pos.x && sfView_getCenter(gameView).y == player[i].pos.y) allowedToMove = sfTrue;
 		//else allowedToMove = sfFalse;
@@ -337,6 +356,15 @@ sfBool canPlayerGoThere(PlayerType _type)
 	return sfTrue;
 }
 
+sfBool isPlayerGrounded(PlayerType _type)
+{
+	sfVector2i iPos = getCurrentBlockPos(_type);
+	sfVector2i underPos = iPos;
+	underPos.y += 1; // one block below
+	if (isBlockSolid(underPos)) return sfTrue;
+	return sfFalse;
+}
+
 sfVector2i convertPosInBlock(sfVector2f _pos)
 {
 	return vector2i((int)_pos.x / (int)BLOCK_SIZE, (int)_pos.y / (int)BLOCK_SIZE - 1);
@@ -422,6 +450,16 @@ void movePlayer(PlayerType _type, Direction _direction)
 				moveTimer = 0.f;
 				player[_type].animState = IDLE;
 				setPlayerPosInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
+			}
+			break;
+		case FALL:
+			player[_type].pos.y = Lerp(player[_type].tmpPos.y, player[_type].tmpPos.y + BLOCK_SIZE, moveTimer * 1.f / ANIM_TIME_DURATION);
+			if (moveTimer >= ANIM_TIME_DURATION) {
+				resetTmpPos = sfTrue;
+				isAnimFinished = sfTrue;
+				moveTimer = 0.f;
+				setPlayerPosInBlock(_type, player[_type].wantedBloc.x, player[_type].wantedBloc.y);
+				player[_type].animState = IDLE;
 			}
 			break;
 		default:
